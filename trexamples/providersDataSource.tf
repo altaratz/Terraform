@@ -13,8 +13,12 @@ resource "aws_vpc" "main" {
         Location = "Israel"
     }
 }
+
+# using data source in the count  instead of a variable
+
 resource "aws_subnet" "Subnets" {
-    count = "${length(var.azs)}"
+    count = "${length(data.aws_availability_zones.azs.names)}"
+    availability_zone = "${element(data.aws_availability_zones.azs.names,count.index)}"
     vpc_id = "${aws_vpc.main.id}"
     cidr_block = "${element(var.vpc_subnet_cidr,count.index)}"
 
